@@ -833,7 +833,7 @@ button {
 #rankings h2 {
     float: left;
     margin: 15px 0 0 10px;
-    color:#333333;
+    color: #333333;
 }
 
 .r-ul {
@@ -845,19 +845,24 @@ button {
     float: left;
     margin: 20px 15px 0 5px;
 }
-#rankings h2 a,.content a,.r-li a{
-    color:#333333;
+
+#rankings h2 a,
+.content a,
+.r-li a {
+    color: #333333;
 }
 
-.img img{
-    width:80px;
+.img img {
+    width: 80px;
 }
-.img{
+
+.img {
     position: relative;
     bottom: 125px;
     text-align: center;
 }
-.bottom-pic-l{
+
+.bottom-pic-l {
     right: 70px;
     width: 235px;
     height: 135px;
@@ -866,13 +871,13 @@ button {
     top: 55px;
 }
 
-.shadow{
+.shadow {
     background-color: #6d7e92;
     opacity: 0.05;
     height: 135px;
 }
 
-.content{
+.content {
     margin: 5px 30px;
     word-break: break-all;
     overflow: hidden;
@@ -882,23 +887,122 @@ button {
     -webkit-line-clamp: 2;
     text-align: left;
     font-size: 10px;
-    color:#333333;
+    color: #333333;
 }
 
-.s-btn{
-    width:235px;
+.s-btn {
+    width: 235px;
     height: 60px;
     position: relative;
     bottom: 115px;
 }
-.rank-s-btn{
-    width:114px;
+
+.rank-s-btn {
+    width: 114px;
     background-color: #f7f8f9;
-    color:#666;
+    color: #666;
     height: 25px;
     float: left;
     margin-left: 3px;
-    margin-bottom:5px;
+    margin-bottom: 5px;
     text-align: center;
     font-size: 13px;
+}
+
+.bottom-pic-r {
+    float: right;
+    width: 320px;
+    height: 215px;
+    position: relative;
+    bottom: 80px;
+    right: 10px;
+}
+
+.pic-r {
+    margin: 5px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.pic-r img {
+    width: 60px;
+}
+
+.pic-r-text {
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-align: left;
+    color: black;
+    font-size: 12px;
+    width: 210px;
+    float: right;
+    margin: 0 3px;
+}
+
+.r-li:hover,
+.pic-r-text:hover,
+.content:hover {
+    color: #e1251b;
+}
+
+.dis-carousel {
+    overflow: hidden;
+}
+
+.scroll-bar {
+    position: relative;
+    right: 0;
+    width: 2910px;
+    height: 250px;
+    overflow: hidden;
+}
+
+.scroll-item {
+    height: 250px;
+    width: 194px;
+    background-color: #ddd;
+    float: left;
+}
+
+.other {
+    background-color: #6d7e92;
+}
+
+.scroll {
+    position: relative;
+    height: 2px;
+    float: right;
+    width: 960px;
+    right: 10px;
+    bottom: 10px;
+    background-color: #98989875;
+    opacity: 0;
+}
+
+.scroll-btn {
+    bottom: 4px;
+    position: relative;
+    border-radius: 5px;
+    width: 80px;
+    height: 10px;
+    background-color: #33333366;
+    float: left;
+}
+
+.toleft{
+    animation: toleft linear 30s;
+    animation-iteration-count:infinite
+}
+
+@keyframes toleft{
+    from{
+        transform: translateX(0px)
+    }
+    to{
+        transform: translateX(-1746px)
+    }
 }
