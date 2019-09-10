@@ -1,6 +1,16 @@
 $("#listfore").hover(hoverShow, hoverHide)
 $(".right-sidebar").hover(hoverShow, hoverHide)
+window.onscroll = scroll
 
+function scroll(){
+    if(window.pageYOffset >= 700){
+        console.log("700")
+        $(".right-menu").addClass("movedown")
+    }
+    if(window.pageYOffset < 700){
+        $(".right-menu").removeClass("movedown")
+    }
+}
 function hoverShow() {
     $(".right-sidebar").css("display", "block")
     $("#listfore").css("background-color", "rgb(217,217,217)")
@@ -18,84 +28,153 @@ function clearTimer() {
     }
 }
 
+function fadeOut(arr) {
+    for (var each in arr) {
+        $(arr[each]).fadeOut('slow')
+    }
+}
+
+function cirbtnFade(i) {
+    for (var each in btnid) {
+        $(btnid[each]).removeClass("circle-button-hover")
+    }
+    $(btnid[i]).toggleClass("circle-button-hover")
+}
+
+var picid = ["#pic1", "#pic2", "#pic3"]
+var btnid = ["#cirbtn1", "#cirbtn2", "#cirbtn3"]
+i = 0;
+
 //指示器
-function carousel(id, i, n, time) {
+// function carousel(picid, i, n, time) {
+//     var timer = window.setInterval(function () {
+//         $(picid[i]).fadeOut("slow")
+//         if (i == n) {
+//             i = -1
+//         }
+//         $(picid[i + 1]).fadeIn("slow")
+//         i += 1
+//         console.log("done")
+//     }, time)
+//     console.log("timer:" + timer)
+//     return timer
+// }
+
+
+//指示器2.0
+$(picid[0]).fadeIn("slow")
+
+function carousel(picid, i, n, time) {
     var timer = window.setInterval(function () {
-        $("#" + id + i).fadeOut("slow")
-        if (i == n) {
-            i = 0
+        for (var each in picid) {
+            $(picid[each]).fadeOut("slow")
         }
-        $("#" + id + (i + 1)).fadeIn("slow")
+        if (i == n) {
+            i = -1
+        }
+        $(picid[i + 1]).fadeToggle("slow")
         i += 1
-        console.log("done")
     }, time)
-    console.log("timer:" + timer)
     return timer
 }
 
+//指示器底按钮
+function btnCarousel(btnid, i, n, time) {
+    var timer = window.setInterval(function () {
+        for (var each in btnid) {
+            $(btnid[each]).removeClass("circle-button-hover")
+        }
+        if (i == n) {
+            i = -1
+        }
+        $(btnid[i + 1]).toggleClass("circle-button-hover")
+        i += 1
+        window.i = i
+    }, time)
+    return timer
+}
+
+//hover返回函数 底部指示器定位 (需要优化)
+function onHover(i) {
+    return function () {
+        clearTimer()
+        window.i = i
+        console.log("window.i=" + window.i)
+        if (i == 0) {
+            fadeOut(["#pic3", "#pic2"])
+        }
+        if (i == 1) {
+            fadeOut(["#pic1", "#pic3"])
+        }
+        if (i == 2) {
+            fadeOut(["#pic1", "#pic2"])
+        }
+        $(picid[i]).fadeIn("slow")
+        cirbtnFade(i)
+        pagetimer["timer1"] = carousel(picid, i, 2, 5000)
+        pagetimer["timer2"] = btnCarousel(btnid, i, 2, 5000)
+    }
+}
+
+//左右按钮(要优化)
+function leftClick(i) {
+    return function () {
+        console.log("i="+i)
+        clearTimer()
+        var a
+        if (window.i == 0) {
+            a = 2
+            fadeOut(["#pic1", "#pic2"])
+        } else {
+            a = window.i - 1
+            if (a == 1) {
+                fadeOut(["#pic1", "#pic3"])
+            }
+            if (a == 0) {
+                fadeOut(["#pic2", "#pic3"])
+            }
+        }
+        $(picid[a]).fadeIn("slow")
+        cirbtnFade(a)
+        window.i = a
+        pagetimer['timer1'] = carousel(picid, a, 2, 5000)
+        pagetimer['timer2'] = btnCarousel(btnid, a, 2, 5000)
+    }
+}
+
+function rightClick(i) {
+    return function () {
+        clearTimer()
+        var a
+        if (window.i == 2) {
+            a = 0
+            fadeOut(["#pic2", "#pic3"])
+        } else {
+            a = window.i + 1
+            if (a == 1) {
+                fadeOut(["#pic1", "#pic3"])
+            }
+            if (a == 2) {
+                fadeOut(["#pic2", "#pic1"])
+            }
+        }
+        $(picid[a]).fadeIn('slow')
+        cirbtnFade(a)
+        window.i = a
+        pagetimer['timer1'] = carousel(picid, a, 2, 5000)
+        pagetimer['timer2'] = btnCarousel(btnid, a, 2, 5000)
+    }
+}
+
+
 var pagetimer = {}
 
-pagetimer["timer1"] = carousel("pic", 1, 3, 5000)
+pagetimer["timer1"] = carousel(picid, i, 2, 5000)
+pagetimer["timer2"] = btnCarousel(btnid, i, 2, 5000)
 
-// ???
-function cirhover(i, n) {
-    console.log("i="+i)
-    clearTimer()
-    var arr = [1, 2, 3]
-    for (var i = 0; i < 3; i++) {
-        $("#pic" + arr[i]).fadeOut("slow")
-    }
-    console.log("cirhover")
-    $("#pic" + n).fadeIn("slow")
-    pagetimer["timer1"] = carousel("pic", i - 1, 3, 5000)
-    $("#cirbtn" + n).css("background-color", "#fefefe")
-}
+$("#cirbtn1").hover(onHover(0))
+$("#cirbtn2").hover(onHover(1))
+$("#cirbtn3").hover(onHover(2))
+$("#lbtn").click(leftClick(i))
+$("#rbtn").click(rightClick(i))
 
-function cirhoverLeave(n) {
-    $("#cirbtn" + n).css("background-color", "rgba(255,255,255,.4)")
-}
-
-var i = 1
-
-$("#cirbtn1").hover(function () {
-    clearTimer()
-    $("#pic1").fadeIn("slow")
-    $("#pic2").fadeOut("slow")
-    $("#pic3").fadeOut("slow")
-    $("#cirbtn1").css("background-color", "#fefefe")
-    pagetimer["timer1"] = carousel("pic", i - 1, 3, 5000)
-}, function () {
-    $("#cirbtn1").css("background-color", "rgba(255,255,255,.4)")
-})
-$("#cirbtn2").hover(cirhover(i, 2), cirhoverLeave(2))
-$("#cirbtn3").hover(cirhover(i, 3), cirhoverLeave(3))
-
-$("#lbtn").click(function () {
-    clearTimer()
-    if (i == 1) {
-        $("#pic1").fadeOut("slow")
-        $("#pic3").fadeIn("slow")
-        i = 3
-        pagetimer["timer1"] = carousel("pic", i, 3, 5000)
-    } else {
-        $("#pic" + i).fadeOut("slow")
-        i -= 1
-        $("#pic" + i).fadeIn("slow")
-        pagetimer["timer1"] = carousel("pic", i, 3, 5000)
-    }
-})
-
-$("#rbtn").click(function () {
-    clearTimer()
-    if (i == 3) {
-        $("#pic3").fadeOut("slow")
-        $("#pic1").fadeIn("slow")
-        i = 1
-        pagetimer["timer1"] = carousel("pic", i, 3, 5000)
-    } else {
-        $("#pic" + i).fadeOut("slow")
-        i += 1
-        $("#pic" + i).fadeIn("slow")
-        pagetimer["timer1"] = carousel("pic", i, 3, 5000)
-    }
-})
