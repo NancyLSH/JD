@@ -269,22 +269,40 @@ function toLeft() {
 }
 
 $(document).ready(function () {
+    var barX = 0
     toLeft()
     $("#discover").hover(function () {
-        $(".scroll").css("opacity",1)
+        $(".scroll").css("opacity", 1)
         var x = parseFloat($("#scrollBar").css('transform').substring(7).split(',')[4])
-        console.log("x:"+x)
-        var scrollBtnX = (-1)*x*880/1746
-        console.log("scrollX:"+scrollBtnX)
-        $("#scrollbtn").css("transform","translateX(" + scrollBtnX + "px)")
-        $("#scrollbtn").css("transition","transform 0s")
-    },function(){
-        $(".scroll").css("opacity",0)
+        var scrollBtnX = (-1) * (x + barX) * 880 / 1746
+        console.log("scrollX:" + scrollBtnX)
+        $("#scrollbtn").css("transform", "translateX(" + scrollBtnX + "px)")
+        $("#scrollbtn").css("transition", "transform 0s")
+        $("#scrollBar").css("left", (x + barX) + "px")
+        $("#scrollBar").removeClass("toleft")
+        barX += x
+    }, function () {
+        $(".scroll").css("opacity", 0)
+        console.log(barX)
+        $("#scrollBar").css("left","0px")
+        $("#scrollBar").css("transform", "translateX(" + barX + ")px")
+        //a bug
+        $("#scrollBar").css("transition","transform 0s")
+        toLeft()
     })
 })
+var move = false
+var x = 0
+$("#scrollbtn").mousedown(function () {
+    x = parseFloat($("#scrollbtn").css('transform').substring(7).split(',')[4])
+    console.log("x:" + x)
+    move = true
+    // $(".scroll-bar").removeClass("toleft")
+})
 
-$("#scrollbtn").mousedown(function(){
-    var x = parseFloat($("#scrollBar").css('transform').substring(7).split(',')[4])
-    console.log("x:"+x)
-    $(".scroll-bar").removeClass("toleft")
+$(document).mousemove(function () {
+    if (move) {
+        var newX = $("#scrollbtn").position().left;
+        console.log("newX:" + newX)
+    }
 })
