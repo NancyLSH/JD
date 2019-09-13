@@ -268,41 +268,85 @@ function toLeft() {
     $(".scroll-bar").addClass("toleft")
 }
 
+//jq animate()
+function changeX(x) {
+    $(".scroll-bar").removeClass("toleft")
+    $(".scroll-bar").css({
+        translate: [x + "px", "0px"]
+    })
+    $(".scroll-bar").css("transition", "transform 0s")
+}
+
+//hover后scroll-bar的过渡效果
+function scrollMove(time) {
+    $(".scroll-bar").transition({
+        translate: ["-1746px", 0]
+    }, time, "linear")
+}
+
+function move(time) {
+    var timer = window.setTimeout(function () {
+        toLeft()
+    }, time)
+    return timer
+}
+
 $(document).ready(function () {
-    var barX = 0
+    var start = 0
     toLeft()
     $("#discover").hover(function () {
+        clearTimeout(pagetimer["timer3"])
+        $(".scroll-bar").stop(true)
         $(".scroll").css("opacity", 1)
         var x = parseFloat($("#scrollBar").css('transform').substring(7).split(',')[4])
-        var scrollBtnX = (-1) * (x + barX) * 880 / 1746
+        start = x
+        console.log("start:" + start)
+        var scrollBtnX = (-1) * x * 880 / 1746
+        changeX(start)
         console.log("scrollX:" + scrollBtnX)
         $("#scrollbtn").css("transform", "translateX(" + scrollBtnX + "px)")
         $("#scrollbtn").css("transition", "transform 0s")
-        $("#scrollBar").css("left", (x + barX) + "px")
-        $("#scrollBar").removeClass("toleft")
-        barX += x
     }, function () {
         $(".scroll").css("opacity", 0)
-        console.log(barX)
-        $("#scrollBar").css("left","0px")
-        $("#scrollBar").css("transform", "translateX(" + barX + ")px")
-        //a bug
-        $("#scrollBar").css("transition","transform 0s")
-        toLeft()
+        // console.log("distance:"+(1746+start))
+        var time = Math.ceil(((1746 + start) / 1746) * 30000)
+        console.log("time:" + time)
+        scrollMove(time)
+        pagetimer["timer3"] = move(time)
     })
-})
-var move = false
-var x = 0
-$("#scrollbtn").mousedown(function () {
-    x = parseFloat($("#scrollbtn").css('transform').substring(7).split(',')[4])
-    console.log("x:" + x)
-    move = true
-    // $(".scroll-bar").removeClass("toleft")
-})
 
-$(document).mousemove(function () {
-    if (move) {
-        var newX = $("#scrollbtn").position().left;
-        console.log("newX:" + newX)
-    }
+    //btn点击效果
+    var moveBtn = false
+    var btnx = 0
+    $("#scrollbtn").mousedown(function () {
+        clearTimeout(pagetimer["timer3"])
+        btnx = window.event.clientX
+        var scroll = $("#scrollbtn").position().left;
+        console.log("btn-left:" + scroll)
+        if (scroll < 880 && scroll > 0) {
+            console.log("true")
+            moveBtn = true
+        } else {
+            moveBtn = false
+        }
+    })
+    $(document).mousemove(function () {
+        if (moveBtn) {
+            var moveDistance = window.event.clientX
+            var dis = moveDistance - btnx
+            $("#scrollbtn").css("transform", "translateX(" + dis + "px)")
+            $("#scrollbtn").css("transition", "transform 0s")
+            var barDistance = dis / 960 * 1746
+            $(".scroll-bar").css("transform", "translateX(-" + barDistance + "px)")
+            $(".scroll-bar").css("transition", "transform 0s")
+        }
+    })
+    $(document).mouseup(function () {
+        moveBtn = false
+        var x = parseFloat($("#scrollBar").css('transform').substring(7).split(',')[4])
+        var time = Math.ceil(((1746 + x) / 1746) * 30000)
+        console.log("time:" + time)
+        scrollMove(time)
+        pagetimer["timer3"] = move(time)
+    })
 })
