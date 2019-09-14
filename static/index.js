@@ -262,6 +262,7 @@ $("#li2").hover(changepic(1))
 //     console.log("newX:" + window.event.clientX)
 // })
 
+var scrolltimer = {}
 
 //滚动条 自动滚动
 function toLeft() {
@@ -271,20 +272,22 @@ function toLeft() {
 //jq animate()
 function changeX(x) {
     $(".scroll-bar").removeClass("toleft")
-    $(".scroll-bar").css({
-        translate: [x + "px", "0px"]
-    })
+    $(".scroll-bar").css("transform", "translateX(" + x + "px)")
     $(".scroll-bar").css("transition", "transform 0s")
 }
 
 //hover后scroll-bar的过渡效果
 function scrollMove(time) {
-    $(".scroll-bar").transition({
-        translate: ["-1746px", 0]
-    }, time, "linear")
+    var x = time/1000
+    $(".scroll-bar").css("transform", "translateX(-1746px)")
+    $(".scroll-bar").css("transition", "transform " + x + "s linear")
+    document.getElementById("scrollBar").addEventListener("transitionend",function(){
+        scrolltimer["timer1"] = move(time)
+    })
 }
 
 function move(time) {
+    console.log("timeout")
     var timer = window.setTimeout(function () {
         toLeft()
     }, time)
@@ -295,8 +298,9 @@ $(document).ready(function () {
     var start = 0
     toLeft()
     $("#discover").hover(function () {
-        clearTimeout(pagetimer["timer3"])
-        $(".scroll-bar").stop(true)
+        for (var each in scrolltimer) {
+            clearTimeout(scrolltimer[each]);
+        }    
         $(".scroll").css("opacity", 1)
         var x = parseFloat($("#scrollBar").css('transform').substring(7).split(',')[4])
         start = x
@@ -308,20 +312,20 @@ $(document).ready(function () {
         $("#scrollbtn").css("transition", "transform 0s")
     }, function () {
         $(".scroll").css("opacity", 0)
-        // console.log("distance:"+(1746+start))
         var time = Math.ceil(((1746 + start) / 1746) * 30000)
-        console.log("time:" + time)
         scrollMove(time)
-        pagetimer["timer3"] = move(time)
     })
 
     //btn点击效果
     var moveBtn = false
     var btnx = 0
+    var scroll = 0
     $("#scrollbtn").mousedown(function () {
-        clearTimeout(pagetimer["timer3"])
+        for (var each in scrolltimer) {
+            clearTimeout(scrolltimer[each]);
+        }    
         btnx = window.event.clientX
-        var scroll = $("#scrollbtn").position().left;
+        scroll = $("#scrollbtn").position().left;
         console.log("btn-left:" + scroll)
         if (scroll < 880 && scroll > 0) {
             console.log("true")
@@ -334,9 +338,10 @@ $(document).ready(function () {
         if (moveBtn) {
             var moveDistance = window.event.clientX
             var dis = moveDistance - btnx
-            $("#scrollbtn").css("transform", "translateX(" + dis + "px)")
+            console.log("dis:" + dis)
+            $("#scrollbtn").css("transform", "translateX(" + (scroll + dis) + "px)")
             $("#scrollbtn").css("transition", "transform 0s")
-            var barDistance = dis / 960 * 1746
+            var barDistance = (scroll + dis) / 960 * 1746
             $(".scroll-bar").css("transform", "translateX(-" + barDistance + "px)")
             $(".scroll-bar").css("transition", "transform 0s")
         }
@@ -345,8 +350,6 @@ $(document).ready(function () {
         moveBtn = false
         var x = parseFloat($("#scrollBar").css('transform').substring(7).split(',')[4])
         var time = Math.ceil(((1746 + x) / 1746) * 30000)
-        console.log("time:" + time)
         scrollMove(time)
-        pagetimer["timer3"] = move(time)
     })
 })
